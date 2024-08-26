@@ -10,13 +10,17 @@
 
 #include "gpio.h"
 
+#define LIMIT_SWITCH_DOWN	3
+#define LIMIT_SWITCH_UP	2
+
+#define LIMIT_SWITCH_DOWN_END	4
+#define LIMIT_SWITCH_UP_END	5
+
 #define LIMIT_SWITCH_CLOSE	3
 #define LIMIT_SWITCH_OPEN	2
 
 #define LIMIT_SWITCH_CLOSE_END	4
 #define LIMIT_SWITCH_OPEN_END	5
-
-
 
 #define MAX_DEBOUNCE_EVENT			10
 #define LIMIT_SWITCH(_N)			Debounce[_N - 1]

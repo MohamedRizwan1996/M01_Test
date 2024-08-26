@@ -182,8 +182,6 @@ void Application_Task(void *argument)
 #if(SYSTEM_M01 == SYSTEM_M01_LIFTER_TEST)
 	  osDelay(LIFTER_TASK_CYCLE_TIME);
 
-#elif(SYSTEM_M01 == SYSTEM_M01_BRAKING_STEERING_TEST)
-	  osDelay(5);
 #else
 	  osDelay(1);
 #endif

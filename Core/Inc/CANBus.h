@@ -48,6 +48,9 @@
 #define MRCU_STEERING_ANGLE               				0X0A
 #define MRCU_STEERING_ANGULAR_VELOCITY      			0X0B
 
+#define MRCU_LIFTING_ANGLE               				0X0A
+#define MRCU_LIFTING_ANGULAR_VELOCITY      				0X0B
+
 #define MRCU_BRAKE_VALUE						      	0X0C
 #define MRCU_ULTRASONIC  			    				0X0D
 
@@ -98,6 +101,7 @@
 #define STEERING_RESERVED_MESSAGE_5      				0X2E
 #define STEERING_RESERVED_MESSAGE_6      				0X2F
 #define STEERING_RESERVED_MESSAGE_7      				0X30
+
 
 /*BRAKE BOARD*/
 #define BRAKE_APPLIED_TORQUE_FRONT 						0X31

@@ -35,12 +35,12 @@
 typedef uint32_t micro_type;
 extern micro_type 	u_tick;
 
-extern float 	 	Absolute_Angle[4];
-extern float 	 	Steering_Base[4];
-extern float 	 	Steering_Angle[4];
-extern float 	 	Steering_angular_velocity[4];
-extern uint16_t 	Angle_Sample_Time[4];
-extern uint16_t 	angular_Sample_Time[4];
+extern float 	 	Absolute_Angle;
+extern float 	 	Lifting_Base;
+extern float 	 	Lifting_Angle;
+extern float 	 	Lifting_Angular_Velocity;
+extern uint16_t 	Angle_Sample_Time;
+extern uint16_t 	Angular_Sample_Time;
 
 sys_status ADC_Start(void);
 void get_angular_velocity(uint32_t _TS);
