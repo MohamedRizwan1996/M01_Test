@@ -96,10 +96,10 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
-#define SYSTEM_M01_BRAKING_STEERING_TEST	1
+#define SYSTEM_M01_BRAKING_TEST	1
 #define SYSTEM_M01_LIFTER_TEST	2
 
-#define SYSTEM_M01	SYSTEM_M01_BRAKING_STEERING_TEST
+#define SYSTEM_M01	SYSTEM_M01_BRAKING_TEST
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

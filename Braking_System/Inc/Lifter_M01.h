@@ -11,8 +11,11 @@
 #include "CubeMars.h"
 #include "PositionSensor.h"
 
-#define LIFT_SPEED		-80.0
-#define UNLIFT_SPEED	80.0
+#define LIFT_MAX_SPEED			-80.0
+#define UNLIFT_MAX_SPEED		80.0
+#define LIFTER_SPEED_ZERO		0.0
+
+#define LIFTER_SPEED_CHANGE_VALUE		10.0
 
 #define LIFTER_TASK_CYCLE_TIME		5
 #define CURRENT_BRAKE_TIMEOUT		2000
@@ -23,6 +26,7 @@ typedef enum
 	LIFTER_MODE_POSITION,
 	LIFTER_MODE_INVALID = 0xFF
 }LifterMode_t;
+
 typedef enum
 {
 	LIFTER_COMMAND_OFF,

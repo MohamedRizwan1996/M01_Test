@@ -174,9 +174,9 @@ void Application_Task(void *argument)
 #if(SYSTEM_M01 == SYSTEM_M01_LIFTER_TEST)
 	  Lifter_M01_Loop();
 
-#elif(SYSTEM_M01 == SYSTEM_M01_BRAKING_STEERING_TEST)
+#elif(SYSTEM_M01 == SYSTEM_M01_BRAKING_TEST)
 
-	  Braking_System_Loop_2();
+	  Braking_System_Loop_M01();
 #endif
 
 #if(SYSTEM_M01 == SYSTEM_M01_LIFTER_TEST)

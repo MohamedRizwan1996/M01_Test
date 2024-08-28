@@ -22,6 +22,10 @@
 #define LIMIT_SWITCH_CLOSE_END	4
 #define LIMIT_SWITCH_OPEN_END	5
 
+
+
+
+
 #define MAX_DEBOUNCE_EVENT			10
 #define LIMIT_SWITCH(_N)			Debounce[_N - 1]
 

@@ -47,8 +47,17 @@ static void Lifter_Brake_Current()
 //	}
 }
 
+static inline float LIFTER_SPEED_INCREMENT_BY_FACTOR(float* value, float factor)
+{
+	return (float)((*value)+factor);
+}
 
+static inline float LIFTER_SPEED_DECREMENT_BY_FACTOR(float* value, float factor)
+{
+	return (float)((*value)-factor);
+}
 
+static float Lift_Speed = LIFTER_SPEED_ZERO;
 static void Lift_Process()
 {
 	if(!LIMIT_SWITCH(LIMIT_SWITCH_UP))
@@ -60,6 +69,8 @@ static void Lift_Process()
 			Lifter_Pos_End = Lifting_Angle;
 		}
 		else	Lifter_Command = LIFTER_COMMAND_OFF;
+		Lift_Speed = LIFTER_SPEED_ZERO;
+		return;
 	}
 	else if(!LIMIT_SWITCH(LIMIT_SWITCH_UP_END))
 	{
@@ -70,17 +81,31 @@ static void Lift_Process()
 			Lifter_Pos_End = Lifting_Angle;
 		}
 		else 	Lifter_Command = LIFTER_COMMAND_OFF;
+		Lift_Speed = LIFTER_SPEED_ZERO;
+		return;
 	}
-	else
+	else if(Lifter_Command == LIFTER_COMMAND_LIFT)
 	{
-		MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
-		MotorControl[0].speed = LIFT_SPEED;
-		Lifter_Status = LIFTER_STATUS_LIFTING;
-		if(Lifter_Command == LIFTER_COMMAND_POS_CALIB)
-			Calib_State = CALIB_LIFTING;
+		if(Lifting_Angle < (0.8*Lifter_Pos_Diff+Lifter_Pos_Start))
+			LIFTER_SPEED_DECREMENT_BY_FACTOR(&Lift_Speed, LIFTER_SPEED_CHANGE_VALUE);
+		else if(Lifting_Angle > (0.8*Lifter_Pos_Diff+Lifter_Pos_Start) && Lifting_Angle < (0.95*Lifter_Pos_Diff+Lifter_Pos_Start))
+			LIFTER_SPEED_INCREMENT_BY_FACTOR(&Lift_Speed, LIFTER_SPEED_CHANGE_VALUE);
+		else if(Lifting_Angle >= (0.95*Lifter_Pos_Diff+Lifter_Pos_Start) && Lifting_Angle <= (1*Lifter_Pos_Diff+Lifter_Pos_Start))
+			Lift_Speed = LIFTER_SPEED_ZERO;
 	}
+	if(Lift_Speed < LIFT_MAX_SPEED)
+		Lift_Speed = LIFT_MAX_SPEED;
+	else if(Lift_Speed >=0)
+		Lift_Speed = LIFTER_SPEED_ZERO;
+
+	MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
+	MotorControl[0].speed = Lift_Speed;
+	Lifter_Status = LIFTER_STATUS_LIFTING;
+	if(Lifter_Command == LIFTER_COMMAND_POS_CALIB)
+		Calib_State = CALIB_LIFTING;
 }
 
+static float Unlift_Speed = LIFTER_SPEED_ZERO;
 static void Unlift_Process()
 {
 	if(!LIMIT_SWITCH(LIMIT_SWITCH_DOWN))
@@ -92,6 +117,8 @@ static void Unlift_Process()
 			Lifter_Pos_Start = Lifting_Angle;
 		}
 		else	Lifter_Command = LIFTER_COMMAND_OFF;
+		Unlift_Speed = LIFTER_SPEED_ZERO;
+		return;
 	}
 	else if (!LIMIT_SWITCH(LIMIT_SWITCH_DOWN_END))
 	{
@@ -102,15 +129,30 @@ static void Unlift_Process()
 			Lifter_Pos_Start = Lifting_Angle;
 		}
 		else	Lifter_Command = LIFTER_COMMAND_OFF;
+		Unlift_Speed = LIFTER_SPEED_ZERO;
+		return;
 	}
-	else
+
+	else if(Lifter_Command == LIFTER_COMMAND_UNLIFT)
 	{
-		MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
-		MotorControl[0].speed = UNLIFT_SPEED;
-		Lifter_Status = LIFTER_STATUS_UNLIFTING;
-		if(Lifter_Command == LIFTER_COMMAND_POS_CALIB)
-					Calib_State = CALIB_UNLIFTING;
+		if(Lifting_Angle > (0.2*Lifter_Pos_Diff+Lifter_Pos_Start))
+			LIFTER_SPEED_INCREMENT_BY_FACTOR(&Unlift_Speed, LIFTER_SPEED_CHANGE_VALUE);
+		else if(Lifting_Angle > (0.05*Lifter_Pos_Diff+Lifter_Pos_Start) && Lifting_Angle < (0.2*Lifter_Pos_Diff+Lifter_Pos_Start))
+			LIFTER_SPEED_DECREMENT_BY_FACTOR(&Unlift_Speed, LIFTER_SPEED_CHANGE_VALUE);
+		else if(Lifting_Angle >= Lifter_Pos_Start && Lifting_Angle <= (0.05*Lifter_Pos_Diff+Lifter_Pos_Start))
+			Unlift_Speed = LIFTER_SPEED_ZERO;
 	}
+	if(Unlift_Speed > UNLIFT_MAX_SPEED)
+		Unlift_Speed = UNLIFT_MAX_SPEED;
+	else if(Unlift_Speed <=0)
+		Unlift_Speed = LIFTER_SPEED_ZERO;
+
+	MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
+	MotorControl[0].speed = Unlift_Speed;
+	Lifter_Status = LIFTER_STATUS_UNLIFTING;
+	if(Lifter_Command == LIFTER_COMMAND_POS_CALIB)
+		Calib_State = CALIB_UNLIFTING;
+
 }
 
 static LifterCommand_t State_Prev = LIFTER_COMMAND_OFF;
@@ -147,7 +189,7 @@ static void Lifter_Continuous_Run()
 		else if((HAL_GetTick()-State_Change_Brake_Timeout) > 500)
 		{
 			MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
-			MotorControl[0].speed = UNLIFT_SPEED;
+			MotorControl[0].speed = UNLIFT_MAX_SPEED;
 			Lifter_Status = LIFTER_STATUS_UNLIFTING;
 		}
 //		else
@@ -171,7 +213,7 @@ static void Lifter_Continuous_Run()
 		else if((HAL_GetTick()-State_Change_Brake_Timeout) > 500)
 		{
 			MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
-			MotorControl[0].speed = LIFT_SPEED;
+			MotorControl[0].speed = LIFT_MAX_SPEED;
 			Lifter_Status = LIFTER_STATUS_LIFTING;
 		}
 //		else
@@ -225,8 +267,6 @@ static void Lifter_Position_Calibration()
 
 	case CALIB_FINISHED_SUCCESSFULLY:
 		Lifter_Pos_Diff = Lifter_Pos_End - Lifter_Pos_Start;
-		Lifter_Command = LIFTER_COMMAND_OFF;
-		break;
 
 	case CALIB_ERROR:
 	case CALIB_STATE_INVALID:

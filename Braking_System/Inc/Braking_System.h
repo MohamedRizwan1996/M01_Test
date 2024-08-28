@@ -83,7 +83,7 @@ void SendBrakeStatusToMainBoard();
 sys_status CAN_TransmitToBrakeMotors();
 
 void Braking_System_Loop();
-void Braking_System_Loop_2();
+void Braking_System_Loop_M01();
 void Braking_System_Config();
 void CAN_Slave_Silent_Loopback_Test();
 
