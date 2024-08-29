@@ -121,24 +121,21 @@ static void Brake_Release_Process()
 	{
 		if(Brake_Motor_Position > (0.2*Brake_Pos_Diff+Brake_Pos_Start))
 			BRAKE_SPEED_INCREMENT_BY_FACTOR(&Brake_Release_Speed, BRAKE_SPEED_CHANGE_VALUE);
-		else if(Brake_Motor_Position > (0.05*Brake_Pos_Diff+Brake_Pos_Start) && Brake_Motor_Position < (0.2*Brake_Pos_Diff+Lifter_Pos_Start))
+		else if(Brake_Motor_Position > (0.05*Brake_Pos_Diff+Brake_Pos_Start) && Brake_Motor_Position < (0.2*Brake_Pos_Diff+Brake_Pos_Start))
 			BRAKE_SPEED_DECREMENT_BY_FACTOR(&Brake_Release_Speed, BRAKE_SPEED_CHANGE_VALUE);
 		else if(Brake_Motor_Position >= Brake_Pos_Start && Brake_Motor_Position <= (0.05*Brake_Pos_Diff+Brake_Pos_Start))
 			Brake_Release_Speed = BRAKE_SPEED_ZERO;
 	}
-	if(Brake_Release_Speed > UNLIFT_MAX_SPEED)
-		Brake_Release_Speed = UNLIFT_MAX_SPEED;
+	if(Brake_Release_Speed > BRAKE_RELEASE_MAX_SPEED)
+		Brake_Release_Speed = BRAKE_RELEASE_MAX_SPEED;
 	else if(Brake_Release_Speed <=0)
 		Brake_Release_Speed = BRAKE_SPEED_ZERO;
 
 	MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
 	MotorControl[0].speed = Brake_Release_Speed;
-	Lifter_Status = LIFTER_STATUS_UNLIFTING;
-	if(Lifter_Command == LIFTER_COMMAND_POS_CALIB)
-		Calib_State = CALIB_UNLIFTING;
-
-	MotorControl[0].CAN_mode = CAN_PACKET_SET_RPM;
-	MotorControl[0].speed = (float)(BRAKE_SPEED);
+	Brake_Status = BRAKE_STATUS_RELEASING;
+	if(Brake_Command == BRAKE_COMMAND_CALIB)
+		Brake_Calib_State = BRAKE_CALIB_RELEASING;
 
 }
 
