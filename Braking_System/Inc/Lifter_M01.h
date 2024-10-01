@@ -17,7 +17,6 @@
 
 #define LIFTER_SPEED_CHANGE_VALUE		10.0
 
-#define LIFTER_TASK_CYCLE_TIME		5
 #define CURRENT_BRAKE_TIMEOUT		2000
 
 typedef enum

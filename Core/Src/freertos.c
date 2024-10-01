@@ -29,6 +29,7 @@
 #include "TimeSharing.h"
 #include "Braking_System.h"
 #include "Lifter_M01.h"
+#include "Door_M01.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -177,15 +178,20 @@ void Application_Task(void *argument)
 #elif(SYSTEM_M01 == SYSTEM_M01_BRAKING_TEST)
 
 	  Braking_System_Loop_M01();
+
+#elif(SYSTEM_M01 == SYSTEM_M01_LEFTDOOR_TEST)
+	  Door_Left_M01_Loop();
+#elif(SYSTEM_M01 == SYSTEM_M01_RIGHTDOOR_TEST)
+	  Door_Right_M01_Loop();
+#elif(SYSTEM_M01 == SYSTEM_M01_LEFTRIGHTDOOR_TEST)
+	  Door_State_Machine();
+	  Door_TimeDelay_Process();
+
+	  Door_Left_M01_Loop();
+	  Door_Right_M01_Loop();
 #endif
 
-#if(SYSTEM_M01 == SYSTEM_M01_LIFTER_TEST)
-	  osDelay(LIFTER_TASK_CYCLE_TIME);
-
-#else
-	  osDelay(1);
-#endif
-
+	  osDelay(5);
   }
   /* USER CODE END Application_Task */
 }

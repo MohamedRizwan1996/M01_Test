@@ -32,7 +32,7 @@ static void Calibrate_Brakes();
 static void bulidCommandsToBrakeMotors();
 static void ApplyEmergencyBrake();
 static uint8_t CheckMotorsMotionDuringCalibration();
-static float Calculate_Required_Cunnent(float _Required_Brake_Force);
+//static float Calculate_Required_Current(float _Required_Brake_Force);
 
 static void CAN_Slave_Startup()
 {
@@ -275,19 +275,19 @@ void SendMotorTemperatureToMainBoard()
 	}
 }
 
-static float Calculate_Required_Cunnent(float _Required_Brake_Force)
-{
-		/* torque(Nm) = F(KN).L(mm) / 2.pi.e
-		 * L = 2(mm)
-		 * e = 0.8 */
-		float est_current = 0;
-		float est_torque = 0.4*_Required_Brake_Force;
-		if (est_torque < 5.5)
-			est_current = 0.108*est_torque+0.045;
-		else
-			est_current = 0.185*(est_torque-5.5)+0.65;
-		return est_current;
-}
+//static float Calculate_Required_Current(float _Required_Brake_Force)
+//{
+//		/* torque(Nm) = F(KN).L(mm) / 2.pi.e
+//		 * L = 2(mm)
+//		 * e = 0.8 */
+//		float est_current = 0;
+//		float est_torque = 0.4*_Required_Brake_Force;
+//		if (est_torque < 5.5)
+//			est_current = 0.108*est_torque+0.045;
+//		else
+//			est_current = 0.185*(est_torque-5.5)+0.65;
+//		return est_current;
+//}
 
 void SendMotorCurrentToMainBoard()
 {
